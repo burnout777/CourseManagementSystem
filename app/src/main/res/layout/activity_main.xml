@@ -7,59 +7,12 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
+    <Button
+        android:id="@+id/addcourse_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="Add Course"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:padding="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <EditText android:id="@+id/etCourseCode"
-            android:hint="Course Code"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <EditText android:id="@+id/etCourseName"
-            android:hint="Course Name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <EditText android:id="@+id/etLecturerName"
-            android:hint="Lecturer Name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <Button android:id="@+id/btnCreateCourse"
-            android:text="Create"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewCourses"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddCourse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:contentDescription="Add Course"
-        android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="@android:color/holo_blue_light"
-        />
-
-
-
+        tools:layout_editor_absoluteY="27dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

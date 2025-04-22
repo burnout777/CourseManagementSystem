@@ -7,8 +7,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import edu.uk.le.coursemanagementsystem.R;
-import edu.uk.le.coursemanagementsystem.Course;
+import edu.uk.le.coursemanagementsystem.model.Course;
 
 import java.util.List;
 

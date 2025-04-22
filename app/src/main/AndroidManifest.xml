@@ -12,6 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CourseManagementSystem"
         tools:targetApi="31">
+        <activity android:name=".CreateCourseActivity" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

@@ -2,19 +2,14 @@ package edu.uk.le.coursemanagementsystem;
 
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import edu.uk.le.coursemanagementsystem.R;
-import edu.uk.le.coursemanagementsystem.AppDB;
-import edu.uk.le.coursemanagementsystem.Course;
-import edu.uk.le.coursemanagementsystem.CourseAdapter;
+import edu.uk.le.coursemanagementsystem.model.Course;
 
 
 import android.content.Intent;
+import android.widget.Button;
+
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -28,10 +23,12 @@ public class MainActivity extends AppCompatActivity {
     CourseAdapter adapter;
     List<Course> courseList;
 
+    private static final String TAG = MainActivity.class.getSimpleName();
+    public static final int ADD_ITEM_ACTIVITY_REQUEST_CODE = 1;
+
     @Override
     protected void onResume() {
         super.onResume();
-        loadCourses();
     }
 
     @Override
@@ -39,18 +36,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        recyclerView = findViewById(R.id.recyclerViewCourses);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        Button createCourseButton = findViewById(R.id.addcourse_button);
 
-        FloatingActionButton fab = findViewById(R.id.fabAddCourse);
-        fab.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, CreateCourseActivity.class)));
+        createCourseButton.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, CreateCourseActivity.class);
+            startActivity(intent);
+        });
 
-        loadCourses();
+
     }
 
-    private void loadCourses() {
-        courseList = AppDB.getInstance(this).courseDao().getAllCourses();
-        adapter = new CourseAdapter(courseList);
-        recyclerView.setAdapter(adapter);
-    }
+
 }

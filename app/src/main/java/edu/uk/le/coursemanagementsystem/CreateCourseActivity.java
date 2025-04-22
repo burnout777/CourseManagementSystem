@@ -1,15 +1,13 @@
 package edu.uk.le.coursemanagementsystem;
 
-
+import java.util.concurrent.Executors;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
-import edu.uk.le.coursemanagementsystem.R;
-import edu.uk.le.coursemanagementsystem.AppDB;
-import edu.uk.le.coursemanagementsystem.Course;
+import edu.uk.le.coursemanagementsystem.model.Course;
 
 public class CreateCourseActivity extends AppCompatActivity {
 
@@ -32,7 +30,12 @@ public class CreateCourseActivity extends AppCompatActivity {
             course.setCourseName(etName.getText().toString().trim());
             course.setLecturerName(etLecturer.getText().toString().trim());
 
-            AppDB.getInstance(this).courseDao().insertCourse(course);
+            Executors.newSingleThreadExecutor().execute(() -> {
+                AppDB.getDatabase(CreateCourseActivity.this)
+                        .courseDao()
+                        .insertCourse(course);
+            });
+
             Toast.makeText(this, "Course created!", Toast.LENGTH_SHORT).show();
             finish(); // Go back to MainActivity
         });

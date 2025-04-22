@@ -1,4 +1,4 @@
-package edu.uk.le.coursemanagementsystem;
+package edu.uk.le.coursemanagementsystem.model;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
