@@ -36,11 +36,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Button listCoursesButton = findViewById(R.id.list_courses_button);
+
+        listCoursesButton.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, ListCourses.class);
+            startActivity(intent);
+        });
+
         Button createCourseButton = findViewById(R.id.addcourse_button);
 
         createCourseButton.setOnClickListener(view -> {
             Intent intent = new Intent(MainActivity.this, CreateCourseActivity.class);
             startActivity(intent);
+
         });
 
 
