@@ -20,7 +20,7 @@ public interface CourseDao {
     void deleteCourse(Course course);
 
     @Query("SELECT * FROM course")
-    LiveData<List<Course>> getAllCourses();
+    List<Course> getAllCourses();
 
     @Query("SELECT * FROM course WHERE course_id = :id")
     Course getCourseById(long id);

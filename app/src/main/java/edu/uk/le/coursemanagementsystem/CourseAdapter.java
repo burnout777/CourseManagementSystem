@@ -6,17 +6,17 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import edu.uk.le.coursemanagementsystem.model.Course;
-
 import java.util.List;
+
+import edu.uk.le.coursemanagementsystem.R;
+import edu.uk.le.coursemanagementsystem.model.Course;
 
 public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseViewHolder> {
 
-    private List<Course> courses;
+    List<Course> courseList;
 
-    public CourseAdapter(List<Course> courses) {
-        this.courses = courses;
+    public CourseAdapter(List<Course> courseList) {
+        this.courseList = courseList;
     }
 
     @NonNull
@@ -29,25 +29,25 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
 
     @Override
     public void onBindViewHolder(@NonNull CourseViewHolder holder, int position) {
-        Course course = courses.get(position);
-        holder.courseCode.setText(course.getCourseCode());
-        holder.courseName.setText(course.getCourseName());
-        holder.lecturerName.setText(course.getLecturerName());
+        Course course = courseList.get(position);
+        holder.tvName.setText(course.getCourseName());
+        holder.tvCode.setText(course.getCourseCode());
+        holder.tvLecturer.setText(course.getLecturerName());
     }
 
     @Override
     public int getItemCount() {
-        return courses.size();
+        return courseList.size();
     }
 
-    public static class CourseViewHolder extends RecyclerView.ViewHolder {
-        TextView courseCode, courseName, lecturerName;
+    static class CourseViewHolder extends RecyclerView.ViewHolder {
+        TextView tvName, tvCode, tvLecturer;
 
         public CourseViewHolder(@NonNull View itemView) {
             super(itemView);
-            courseCode = itemView.findViewById(R.id.courseCode);
-            courseName = itemView.findViewById(R.id.courseName);
-            lecturerName = itemView.findViewById(R.id.lecturerName);
+            tvName = itemView.findViewById(R.id.tvCourseName);
+            tvCode = itemView.findViewById(R.id.tvCourseCode);
+            tvLecturer = itemView.findViewById(R.id.tvLecturerName);
         }
     }
 }

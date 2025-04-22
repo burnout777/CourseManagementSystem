@@ -11,8 +11,6 @@ import android.content.Intent;
 import android.widget.Button;
 
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 
 import java.util.List;
@@ -39,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         Button listCoursesButton = findViewById(R.id.list_courses_button);
 
         listCoursesButton.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, ListCourses.class);
+            Intent intent = new Intent(MainActivity.this, ListCoursesActivity.class);
             startActivity(intent);
         });
 
@@ -50,9 +48,5 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
 
         });
-
-
     }
-
-
 }

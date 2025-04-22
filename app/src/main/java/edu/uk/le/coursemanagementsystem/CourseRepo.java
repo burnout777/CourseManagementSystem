@@ -16,7 +16,7 @@ public class CourseRepo {
     CourseRepo(Application application) {
         AppDB db = AppDB.getDatabase(application);
         courseDao = db.courseDao();
-        allCourses = courseDao.getAllCourses();
+        List<Course> allCourses = courseDao.getAllCourses();
     }
 
     LiveData<List<Course>> getAllCourses() {

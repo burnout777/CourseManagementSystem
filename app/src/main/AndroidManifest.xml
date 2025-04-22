@@ -13,9 +13,10 @@
         android:theme="@style/Theme.CourseManagementSystem"
         tools:targetApi="31">
         <activity
-            android:name=".ListCourses"
+            android:name=".ListCoursesActivity"
             android:exported="false" />
         <activity android:name=".CreateCourseActivity" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
