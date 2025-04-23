@@ -12,7 +12,7 @@ public class StudentViewModel extends AndroidViewModel {
 
     public StudentViewModel(Application application) {
         super(application);
-        repo = new StudentRepo(application); // Initialize repo first
+        repo = new StudentRepo(application); // initialize repo first
         allStudents = repo.getAllStudents();
     }
 

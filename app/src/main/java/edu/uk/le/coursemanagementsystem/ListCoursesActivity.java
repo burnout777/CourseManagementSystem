@@ -30,12 +30,11 @@ public class ListCoursesActivity extends AppCompatActivity {
                 adapter = new CourseAdapter(courseList, new CourseAdapter.OnCourseClickListener() {
                     @Override
                     public void onCourseClick(Course course) {
-                        // You can leave this empty or implement navigation
+                        // implement navigation?
                     }
 
                     @Override
                     public void onCourseLongClick(Course course) {
-                        // You can leave this empty
                     }
                 });
                 recyclerView.setAdapter(adapter);
