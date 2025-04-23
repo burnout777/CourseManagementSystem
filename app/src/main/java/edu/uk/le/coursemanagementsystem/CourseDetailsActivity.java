@@ -2,15 +2,13 @@ package edu.uk.le.coursemanagementsystem;
 
 import android.os.Bundle;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
-
 import edu.uk.le.coursemanagementsystem.model.Course;
 import edu.uk.le.coursemanagementsystem.model.Enrollment;
 import edu.uk.le.coursemanagementsystem.model.Student;
@@ -36,6 +34,11 @@ public class CourseDetailsActivity extends AppCompatActivity {
 
         // Get course ID from intent
         courseId = getIntent().getLongExtra("course_id", -1);
+        if (courseId == -1) {
+            Toast.makeText(this, "Error: Course not found", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
         // Set up RecyclerView
         rvStudentList.setLayoutManager(new LinearLayoutManager(this));
@@ -69,11 +72,19 @@ public class CourseDetailsActivity extends AppCompatActivity {
                     tvCourseCode.setText(course.getCourseCode());
                     tvCourseName.setText(course.getCourseName());
                     tvLecturerName.setText(course.getLecturerName());
+                } else {
+                    Toast.makeText(this, "Error: Course not found in database", Toast.LENGTH_SHORT).show();
+                    finish();
+                    return;
                 }
 
                 studentList.clear();
                 studentList.addAll(students);
                 adapter.notifyDataSetChanged();
+
+                if (students.isEmpty()) {
+                    Toast.makeText(this, "No students enrolled in this course", Toast.LENGTH_SHORT).show();
+                }
             });
         });
     }

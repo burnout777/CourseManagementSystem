@@ -1,20 +1,13 @@
 package edu.uk.le.coursemanagementsystem;
 
 import android.os.Bundle;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-
 import edu.uk.le.coursemanagementsystem.model.Course;
-
-
 import android.content.Intent;
 import android.widget.Button;
-
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -30,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        loadCourses(); // Reload courses when returning to this activity
     }
 
     @Override
@@ -42,22 +36,35 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewCourses);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        Button createCourseButton = findViewById(R.id.addcourse_button);
+        createCourseButton.setOnClickListener(view -> {
+            Intent intent = new Intent(MainActivity.this, CreateCourseActivity.class);
+            startActivity(intent);
+        });
+
+        loadCourses();
+    }
+
+    private void loadCourses() {
         Executors.newSingleThreadExecutor().execute(() -> {
             List<Course> courseList = AppDB.getDatabase(this).courseDao().getAllCourses();
 
             runOnUiThread(() -> {
-                adapter = new CourseAdapter(courseList);
+                adapter = new CourseAdapter(courseList, new CourseAdapter.OnCourseClickListener() {
+                    @Override
+                    public void onCourseClick(Course course) {
+                        Intent intent = new Intent(MainActivity.this, CourseDetailsActivity.class);
+                        intent.putExtra("course_id", course.getCourseId());
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    public void onCourseLongClick(Course course) {
+                        // Will implement for Task 4
+                    }
+                });
                 recyclerView.setAdapter(adapter);
             });
-        });
-
-
-        Button createCourseButton = findViewById(R.id.addcourse_button);
-
-        createCourseButton.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, CreateCourseActivity.class);
-            startActivity(intent);
-
         });
     }
 }
