@@ -19,6 +19,10 @@ public class StudentRepo {
         studentDao = db.studentDao();
         allStudents = studentDao.getAllStudents();
     }
+
+    LiveData<List<Student>> getStudentsForCourse(long courseId) {
+        return studentDao.getStudentsForCourse(courseId);
+    }
     LiveData<List<Student>> getAllStudents() {
         return allStudents;
     }

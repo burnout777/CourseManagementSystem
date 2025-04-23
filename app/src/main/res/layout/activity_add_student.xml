@@ -29,5 +29,5 @@
         android:id="@+id/buttonAddStudent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Student" />
+        android:text="@string/addStudentToCourseDB" />
 </LinearLayout>

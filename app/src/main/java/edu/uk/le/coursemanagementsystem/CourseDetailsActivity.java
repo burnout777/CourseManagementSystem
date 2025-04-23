@@ -1,9 +1,12 @@
 package edu.uk.le.coursemanagementsystem;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
@@ -19,12 +22,26 @@ public class CourseDetailsActivity extends AppCompatActivity {
     private RecyclerView rvStudentList;
     private StudentAdapter adapter;
     private List<Student> studentList = new ArrayList<>();
+
     private long courseId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Get course ID from intent
+        courseId = getIntent().getLongExtra("course_id", -1);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_details);
+
+
+
+        Button createCourseButton = findViewById(R.id.btnAddStudentToCourse);
+        createCourseButton.setOnClickListener(view -> {
+            Intent intent = new Intent(CourseDetailsActivity.this, AddStudentActivity.class);
+            intent.putExtra("COURSE_ID", ((int) courseId));
+            startActivity(intent);
+        });
 
         // Initialize views
         tvCourseCode = findViewById(R.id.tvCourseCode);
@@ -32,8 +49,7 @@ public class CourseDetailsActivity extends AppCompatActivity {
         tvLecturerName = findViewById(R.id.tvLecturerName);
         rvStudentList = findViewById(R.id.rvStudentList);
 
-        // Get course ID from intent
-        courseId = getIntent().getLongExtra("course_id", -1);
+
         if (courseId == -1) {
             Toast.makeText(this, "Error: Course not found", Toast.LENGTH_SHORT).show();
             finish();
@@ -44,6 +60,12 @@ public class CourseDetailsActivity extends AppCompatActivity {
         rvStudentList.setLayoutManager(new LinearLayoutManager(this));
         adapter = new StudentAdapter(studentList);
         rvStudentList.setAdapter(adapter);
+
+        StudentViewModel studentViewModel = new ViewModelProvider(this).get(StudentViewModel.class);
+
+        studentViewModel.getStudentsForCourse(courseId).observe(this, students -> {
+            adapter.setStudents(students);
+        });
 
         // Load course details and enrolled students
         loadCourseDetails();

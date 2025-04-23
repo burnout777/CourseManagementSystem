@@ -9,4 +9,6 @@
 
     <string name="list_courses_button">List Courses</string>
     <string name="menu_button">Back</string>
+    <string name="add_student_to_course">Add Student</string>
+    <string name="addStudentToCourseDB">Add Student</string>
 </resources>

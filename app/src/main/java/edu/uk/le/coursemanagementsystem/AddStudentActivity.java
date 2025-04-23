@@ -32,49 +32,38 @@ public class AddStudentActivity extends AppCompatActivity {
         matricField = findViewById(R.id.editTextMatric);
         addButton = findViewById(R.id.buttonAddStudent);
 
-        AppDatabase db = AppDatabase.getDatabase(getApplicationContext());
-        studentDao = db.studentDao();
-        enrollmentDao = db.enrollmentDao();
+        String userName = nameField.getText().toString();
 
         courseId = getIntent().getIntExtra("COURSE_ID", -1);
 
         addButton.setOnClickListener(v -> {
-            String name = nameField.getText().toString().trim();
-            String email = emailField.getText().toString().trim();
-            String userName = matricField.getText().toString().trim();
+            Student student = new Student();
+            student.setName(nameField.getText().toString().trim());
+            student.setEmail(emailField.getText().toString().trim());
+            student.setUserName(matricField.getText().toString().trim());
 
-            if (name.isEmpty() || email.isEmpty() || userName.isEmpty()) {
-                Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
-                return;
-            }
+
+
 
             Executors.newSingleThreadExecutor().execute(() -> {
-                Student existing = studentDao.getStudentByUserName(userName);
-                int studentId;
+                long generatedStudentId = AppDB.getDatabase(AddStudentActivity.this)
+                        .studentDao()
+                        .insertStudent(student);
 
-                if (existing == null) {
-                    Student newStudent = new Student();
-                    long id = studentDao.insert(newStudent);
-                    studentId = (int) id;
-                } else {
-                    studentId = Math.toIntExact(existing.getStudentId());
-                }
+                Enrollment enrollment = new Enrollment();
+                enrollment.setStudentId(generatedStudentId);
+                enrollment.setCourseId(courseId);
 
-                boolean isEnrolled = enrollmentDao.isStudentEnrolled(courseId, studentId);
+                AppDB.getDatabase(AddStudentActivity.this)
+                        .enrollmentDao().
+                        insert(enrollment);
 
-                if (isEnrolled) {
-                    runOnUiThread(() ->
-                            Toast.makeText(this, "Student already enrolled", Toast.LENGTH_SHORT).show()
-                    );
-                } else {
-                    enrollmentDao.insert(new Enrollment());
-                    runOnUiThread(() -> {
-                        Toast.makeText(this, "Student added", Toast.LENGTH_SHORT).show();
-                        finish();
-                    });
-                }
+                runOnUiThread(() -> {
+                    Toast.makeText(this, "Student added", Toast.LENGTH_SHORT).show();
+                    finish();});
             });
         });
-    }
+    };
 }
+
 

@@ -14,20 +14,25 @@ import edu.uk.le.coursemanagementsystem.model.Student;
 public interface StudentDao {
 
     @Insert
-    void insertStudent(Student student);
+    long insertStudent(Student student);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(Student student);
 
+    @Query("SELECT * FROM student WHERE student_id IN (SELECT student_id FROM enrollment WHERE course_id = :courseId)")
+    LiveData<List<Student>> getStudentsForCourse(long courseId);
+
     @Query("SELECT * FROM student")
     LiveData<List<Student>> getAllStudents();
+
+    @Query("SELECT student_id FROM student WHERE user_name = :user_name")
+    Student getStudentIDByUserName(long user_name);
 
     @Query("SELECT * FROM student WHERE student_id = :id")
     Student getStudentById(long id);
 
-    @Query("SELECT * FROM students WHERE studentId = :id")
-    Student getStudentById(int id);
 
 
+    @Query("SELECT * FROM student WHERE user_name = :userName")
     Student getStudentByUserName(String userName);
 }

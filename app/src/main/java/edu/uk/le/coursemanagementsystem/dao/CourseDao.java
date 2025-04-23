@@ -28,6 +28,7 @@ public interface CourseDao {
     @Query("DELETE FROM course WHERE course_id = :courseId")
     void deleteCourseById(long courseId);
 
+    @Query("SELECT c.* FROM course c INNER JOIN enrollment e ON c.course_id = e.course_id WHERE e.student_id = :studentId")
     List<Course> getCoursesForStudent(int studentId);
 
 }

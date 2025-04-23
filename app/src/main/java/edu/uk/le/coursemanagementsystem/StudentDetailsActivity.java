@@ -36,7 +36,7 @@ public class StudentDetailsActivity extends AppCompatActivity {
 
         studentId = getIntent().getIntExtra("STUDENT_ID", -1);
 
-        AppDatabase db = AppDatabase.getDatabase(getApplicationContext());
+        AppDB db = AppDB.getDatabase(getApplicationContext());
         StudentDao studentDao = db.studentDao();
         EnrollmentDao enrollmentDao = db.enrollmentDao();
         courseDao = db.courseDao();

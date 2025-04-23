@@ -16,6 +16,12 @@ public class StudentViewModel extends AndroidViewModel {
         allStudents = repo.getAllStudents();
     }
 
+    public LiveData<List<Student>> getStudentsForCourse(long courseId) {
+        return repo.getStudentsForCourse(courseId);
+    }
+
+
+
     LiveData<List<Student>> getAllStudents() {
         return allStudents;
     }
