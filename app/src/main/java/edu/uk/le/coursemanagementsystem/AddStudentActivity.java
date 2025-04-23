@@ -32,38 +32,50 @@ public class AddStudentActivity extends AppCompatActivity {
         matricField = findViewById(R.id.editTextMatric);
         addButton = findViewById(R.id.buttonAddStudent);
 
-        String userName = nameField.getText().toString();
-
         courseId = getIntent().getIntExtra("COURSE_ID", -1);
 
+        studentDao = AppDB.getDatabase(this).studentDao();
+        enrollmentDao = AppDB.getDatabase(this).enrollmentDao();
+
         addButton.setOnClickListener(v -> {
-            Student student = new Student();
-            student.setName(nameField.getText().toString().trim());
-            student.setEmail(emailField.getText().toString().trim());
-            student.setUserName(matricField.getText().toString().trim());
-
-
-
+            String name = nameField.getText().toString().trim();
+            String email = emailField.getText().toString().trim();
+            String matric = matricField.getText().toString().trim();
 
             Executors.newSingleThreadExecutor().execute(() -> {
-                long generatedStudentId = AppDB.getDatabase(AddStudentActivity.this)
-                        .studentDao()
-                        .insertStudent(student);
+                Student existingStudent = studentDao.getStudentByUserName(matric);
+                long studentId;
 
+                if (existingStudent != null) {
+                    studentId = existingStudent.getStudentId();
+
+                    // Check if already enrolled
+                    boolean isEnrolled = enrollmentDao.isStudentEnrolled(studentId, courseId);
+                    if (!isEnrolled) {
+                        runOnUiThread(() -> Toast.makeText(this, "Student already enrolled", Toast.LENGTH_SHORT).show());
+                        return;
+                    }
+
+                } else {
+                    // Insert new student
+                    Student student = new Student();
+                    student.setName(name);
+                    student.setEmail(email);
+                    student.setUserName(matric);
+                    studentId = studentDao.insertStudent(student);
+                }
+
+                // Enroll the student
                 Enrollment enrollment = new Enrollment();
-                enrollment.setStudentId(generatedStudentId);
+                enrollment.setStudentId(studentId);
                 enrollment.setCourseId(courseId);
-
-                AppDB.getDatabase(AddStudentActivity.this)
-                        .enrollmentDao().
-                        insert(enrollment);
+                enrollmentDao.insert(enrollment);
 
                 runOnUiThread(() -> {
                     Toast.makeText(this, "Student added", Toast.LENGTH_SHORT).show();
-                    finish();});
+                    finish();
+                });
             });
         });
-    };
+    }
 }
-
-

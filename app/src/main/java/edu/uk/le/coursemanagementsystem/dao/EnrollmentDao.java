@@ -27,5 +27,5 @@ public interface EnrollmentDao {
     List<Enrollment> getStudentsInCourse(long courseId);
 
     @Query("SELECT EXISTS(SELECT 1 FROM enrollment WHERE course_id = :courseId AND student_id = :studentId)")
-    boolean isStudentEnrolled(int courseId, int studentId);
+    boolean isStudentEnrolled(long courseId, long studentId);
 }
