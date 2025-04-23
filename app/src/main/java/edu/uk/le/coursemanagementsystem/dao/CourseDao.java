@@ -27,4 +27,7 @@ public interface CourseDao {
 
     @Query("DELETE FROM course WHERE course_id = :courseId")
     void deleteCourseById(long courseId);
+
+    List<Course> getCoursesForStudent(int studentId);
+
 }

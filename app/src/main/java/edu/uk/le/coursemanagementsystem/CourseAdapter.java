@@ -21,6 +21,9 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         this.listener = listener;
     }
 
+    public CourseAdapter(List<Course> enrolledCourses) {
+    }
+
     @NonNull
     @Override
     public CourseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
