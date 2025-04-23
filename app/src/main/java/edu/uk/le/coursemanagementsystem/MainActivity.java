@@ -11,12 +11,10 @@ import edu.uk.le.coursemanagementsystem.model.Course;
 import android.content.Intent;
 import android.widget.Button;
 
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -44,28 +42,14 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewCourses);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new CourseAdapter(new ArrayList<>());
-        recyclerView.setAdapter(adapter);
+        Executors.newSingleThreadExecutor().execute(() -> {
+            List<Course> courseList = AppDB.getDatabase(this).courseDao().getAllCourses();
 
-        // Observe LiveData from Room database
-        AppDB.getDatabase(this)
-                .courseDao()
-                .getAllCourses()
-                .observe(this, new Observer<List<Course>>() {
-                    @Override
-                    public void onChanged(List<Course> courses) {
-                        adapter.setCourses(courses);
-                    }
-                });
-
-//        Executors.newSingleThreadExecutor().execute(() -> {
-//            List<Course> courseList = AppDB.getDatabase(this).courseDao().getAllCourses();
-//
-//            runOnUiThread(() -> {
-//                adapter = new CourseAdapter(courseList);
-//                recyclerView.setAdapter(adapter);
-//            });
-//        });
+            runOnUiThread(() -> {
+                adapter = new CourseAdapter(courseList);
+                recyclerView.setAdapter(adapter);
+            });
+        });
 
 
         Button createCourseButton = findViewById(R.id.addcourse_button);

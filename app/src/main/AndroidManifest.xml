@@ -16,7 +16,10 @@
             android:name=".ListCoursesActivity"
             android:exported="false" />
         <activity android:name=".CreateCourseActivity" />
-
+        <activity android:name=".CourseDetailsActivity" />
+        <activity android:name=".StudentDetailsActivity" />
+        <activity android:name=".EditStudentActivity" />
+        <activity android:name=".AddStudentActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

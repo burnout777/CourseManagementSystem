@@ -14,9 +14,11 @@ import edu.uk.le.coursemanagementsystem.model.Course;
 public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseViewHolder> {
 
     List<Course> courseList;
+    private OnCourseClickListener listener;
 
-    public CourseAdapter(List<Course> courseList) {
+    public CourseAdapter(List<Course> courseList, OnCourseClickListener listener) {
         this.courseList = courseList;
+        this.listener = listener;
     }
 
     @NonNull
@@ -38,6 +40,21 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         holder.tvName.setText(course.getCourseName());
         holder.tvCode.setText(course.getCourseCode());
         holder.tvLecturer.setText(course.getLecturerName());
+
+        // Click handling
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onCourseClick(course);
+            }
+        });
+
+        // Long click handling
+        holder.itemView.setOnLongClickListener(v -> {
+            if (listener != null) {
+                listener.onCourseLongClick(course);
+            }
+            return true;
+        });
     }
 
     @Override
@@ -54,5 +71,10 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
             tvCode = itemView.findViewById(R.id.tvCourseCode);
             tvLecturer = itemView.findViewById(R.id.tvLecturerName);
         }
+    }
+
+    public interface OnCourseClickListener {
+        void onCourseClick(Course course);
+        void onCourseLongClick(Course course);
     }
 }
