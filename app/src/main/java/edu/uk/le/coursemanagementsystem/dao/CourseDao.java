@@ -9,6 +9,7 @@ import androidx.room.Query;
 import java.util.List;
 
 import edu.uk.le.coursemanagementsystem.model.Course;
+import edu.uk.le.coursemanagementsystem.model.Student;
 
 @Dao
 public interface CourseDao {
@@ -20,7 +21,7 @@ public interface CourseDao {
     void deleteCourse(Course course);
 
     @Query("SELECT * FROM course")
-    List<Course> getAllCourses();
+    LiveData<List<Course>> getAllCourses();
 
     @Query("SELECT * FROM course WHERE course_id = :id")
     Course getCourseById(long id);

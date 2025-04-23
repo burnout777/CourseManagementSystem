@@ -27,6 +27,11 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         return new CourseViewHolder(view);
     }
 
+    public void setCourses(List<Course> courses) {
+        this.courseList = courses;
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(@NonNull CourseViewHolder holder, int position) {
         Course course = courseList.get(position);

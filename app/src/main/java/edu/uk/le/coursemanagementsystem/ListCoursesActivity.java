@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -30,13 +31,20 @@ public class ListCoursesActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewCourses);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        Executors.newSingleThreadExecutor().execute(() -> {
-            List<Course> courseList = AppDB.getDatabase(this).courseDao().getAllCourses();
+        adapter = new CourseAdapter(new ArrayList<>());
+        recyclerView.setAdapter(adapter);
 
-            runOnUiThread(() -> {
-                adapter = new CourseAdapter(courseList);
-                recyclerView.setAdapter(adapter);
-            });
+        // Observe LiveData from Room
+        AppDB.getDatabase(this).courseDao().getAllCourses().observe(this, courseList -> {
+            // Update the adapter's data when courseList changes
+            adapter.setCourses(courseList);
+
+//        Executors.newSingleThreadExecutor().execute(() -> {
+//            List<Course> courseList = AppDB.getDatabase(this).courseDao().getAllCourses();
+//
+//            runOnUiThread(() -> {
+//                adapter = new CourseAdapter(courseList);
+//                recyclerView.setAdapter(adapter);
         });
-    }
+    };
 }
