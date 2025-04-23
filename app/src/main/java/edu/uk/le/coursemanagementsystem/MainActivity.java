@@ -3,12 +3,16 @@ package edu.uk.le.coursemanagementsystem;
 import android.os.Bundle;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import edu.uk.le.coursemanagementsystem.model.Course;
+import edu.uk.le.coursemanagementsystem.model.Enrollment;
 import android.content.Intent;
 import android.widget.Button;
+import android.widget.Toast;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadCourses(); // Reload courses when returning to this activity
+        loadCourses(); // reloads courses when returning to this activity
     }
 
     @Override
@@ -60,10 +64,43 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onCourseLongClick(Course course) {
-                        // Will implement for Task 4
+                        // Show delete confirmation dialog
+                        showDeleteCourseDialog(course);
                     }
                 });
                 recyclerView.setAdapter(adapter);
+            });
+        });
+    }
+
+    private void showDeleteCourseDialog(Course course) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Course")
+                .setMessage("Are you sure you want to delete " + course.getCourseName() + "?")
+                .setPositiveButton("Delete", (dialog, which) -> {
+                    deleteCourse(course);
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void deleteCourse(Course course) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            AppDB db = AppDB.getDatabase(this);
+
+            // deleting all enrollments for this course
+            List<Enrollment> enrollments = db.enrollmentDao().getStudentsInCourse(course.getCourseId());
+            for (Enrollment enrollment : enrollments) {
+                db.enrollmentDao().deleteEnrollment(enrollment);
+            }
+
+            //  deleting the course
+            db.courseDao().deleteCourse(course);
+
+            // Refresh list on main thread
+            runOnUiThread(() -> {
+                Toast.makeText(this, "Course deleted", Toast.LENGTH_SHORT).show();
+                loadCourses(); // Reload the list
             });
         });
     }
