@@ -2,6 +2,7 @@ package edu.uk.le.coursemanagementsystem;
 
 import android.os.Bundle;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import edu.uk.le.coursemanagementsystem.model.Course;
@@ -10,10 +11,12 @@ import edu.uk.le.coursemanagementsystem.model.Course;
 import android.content.Intent;
 import android.widget.Button;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,12 +37,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button listCoursesButton = findViewById(R.id.list_courses_button);
+        EdgeToEdge.enable(this);
 
-        listCoursesButton.setOnClickListener(view -> {
-            Intent intent = new Intent(MainActivity.this, ListCoursesActivity.class);
-            startActivity(intent);
+        recyclerView = findViewById(R.id.recyclerViewCourses);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+            List<Course> courseList = AppDB.getDatabase(this).courseDao().getAllCourses();
+
+            runOnUiThread(() -> {
+                adapter = new CourseAdapter(courseList);
+                recyclerView.setAdapter(adapter);
+            });
         });
+
 
         Button createCourseButton = findViewById(R.id.addcourse_button);
 
