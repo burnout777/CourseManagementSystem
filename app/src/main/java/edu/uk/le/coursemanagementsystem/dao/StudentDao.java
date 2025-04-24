@@ -5,6 +5,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -19,6 +20,9 @@ public interface StudentDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long insert(Student student);
 
+    @Update
+    void updateStudent(Student student);
+
     @Query("SELECT * FROM student WHERE student_id IN (SELECT student_id FROM enrollment WHERE course_id = :courseId)")
     LiveData<List<Student>> getStudentsForCourse(long courseId);
 
@@ -30,8 +34,6 @@ public interface StudentDao {
 
     @Query("SELECT * FROM student WHERE student_id = :id")
     Student getStudentById(long id);
-
-
 
     @Query("SELECT * FROM student WHERE user_name = :userName")
     Student getStudentByUserName(String userName);

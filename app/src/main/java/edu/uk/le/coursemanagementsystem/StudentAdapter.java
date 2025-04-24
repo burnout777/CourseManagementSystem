@@ -1,5 +1,6 @@
 package edu.uk.le.coursemanagementsystem;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +16,19 @@ import edu.uk.le.coursemanagementsystem.model.Student;
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentViewHolder> {
 
     private List<Student> studentList;
+    private OnStudentClickListener listener;
+
+    public interface OnStudentClickListener {
+        void onStudentClick(Student student);
+    }
 
     public StudentAdapter(List<Student> studentList) {
         this.studentList = studentList;
+    }
+
+    public StudentAdapter(List<Student> studentList, OnStudentClickListener listener) {
+        this.studentList = studentList;
+        this.listener = listener;
     }
 
     public void setStudents(List<Student> students) {
@@ -39,6 +50,18 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.StudentV
         holder.tvName.setText(student.getName());
         holder.tvEmail.setText(student.getEmail());
         holder.tvUserName.setText(student.getUserName());
+
+        // click handling
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onStudentClick(student);
+            } else {
+                // no listener = default to opening StudentDetailsActivity
+                Intent intent = new Intent(holder.itemView.getContext(), StudentDetailsActivity.class);
+                intent.putExtra("STUDENT_ID", student.getStudentId());
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override

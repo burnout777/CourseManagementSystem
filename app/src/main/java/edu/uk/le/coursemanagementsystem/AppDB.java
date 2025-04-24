@@ -27,7 +27,7 @@ public abstract class AppDB extends RoomDatabase {
     public abstract EnrollmentDao enrollmentDao();
 
     private static volatile AppDB INSTANCE;
-    private static final int NUMBER_OF_THREADS = 4; // or any number of threads you want
+    private static final int NUMBER_OF_THREADS = 4;
 
     static final ExecutorService databaseWriteExecutor = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
 

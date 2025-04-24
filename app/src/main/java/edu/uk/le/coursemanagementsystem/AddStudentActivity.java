@@ -42,6 +42,12 @@ public class AddStudentActivity extends AppCompatActivity {
             String email = emailField.getText().toString().trim();
             String matric = matricField.getText().toString().trim();
 
+            // validation
+            if (name.isEmpty() || email.isEmpty() || matric.isEmpty()) {
+                Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             Executors.newSingleThreadExecutor().execute(() -> {
                 Student existingStudent = studentDao.getStudentByUserName(matric);
                 long studentId;
@@ -49,15 +55,15 @@ public class AddStudentActivity extends AppCompatActivity {
                 if (existingStudent != null) {
                     studentId = existingStudent.getStudentId();
 
-                    // Check if already enrolled
-                    boolean isEnrolled = enrollmentDao.isStudentEnrolled(studentId, courseId);
-                    if (!isEnrolled) {
+                    // checks if already enrolled
+                    boolean isEnrolled = enrollmentDao.isStudentEnrolled(courseId, studentId);
+                    if (isEnrolled) {
                         runOnUiThread(() -> Toast.makeText(this, "Student already enrolled", Toast.LENGTH_SHORT).show());
                         return;
                     }
 
                 } else {
-                    // Insert new student
+                    // Insert new students details here
                     Student student = new Student();
                     student.setName(name);
                     student.setEmail(email);
@@ -65,7 +71,7 @@ public class AddStudentActivity extends AppCompatActivity {
                     studentId = studentDao.insertStudent(student);
                 }
 
-                // Enroll the student
+                // Enrolling the student
                 Enrollment enrollment = new Enrollment();
                 enrollment.setStudentId(studentId);
                 enrollment.setCourseId(courseId);

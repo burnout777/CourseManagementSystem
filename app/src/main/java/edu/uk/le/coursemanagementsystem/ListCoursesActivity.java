@@ -30,7 +30,6 @@ public class ListCoursesActivity extends AppCompatActivity {
                 adapter = new CourseAdapter(courseList, new CourseAdapter.OnCourseClickListener() {
                     @Override
                     public void onCourseClick(Course course) {
-                        // implement navigation?
                     }
 
                     @Override

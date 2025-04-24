@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -16,7 +17,7 @@ import edu.uk.le.coursemanagementsystem.model.Course;
 import edu.uk.le.coursemanagementsystem.model.Enrollment;
 import edu.uk.le.coursemanagementsystem.model.Student;
 
-public class CourseDetailsActivity extends AppCompatActivity {
+public class CourseDetailsActivity extends AppCompatActivity implements StudentAdapter.OnStudentClickListener {
 
     private TextView tvCourseCode, tvCourseName, tvLecturerName;
     private RecyclerView rvStudentList;
@@ -27,17 +28,14 @@ public class CourseDetailsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        // Get course ID from intent
+        // course ID from intent
         courseId = getIntent().getLongExtra("course_id", -1);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_details);
 
-
-
-        Button createCourseButton = findViewById(R.id.btnAddStudentToCourse);
-        createCourseButton.setOnClickListener(view -> {
+        Button addStudentButton = findViewById(R.id.btnAddStudentToCourse);
+        addStudentButton.setOnClickListener(view -> {
             Intent intent = new Intent(CourseDetailsActivity.this, AddStudentActivity.class);
             intent.putExtra("COURSE_ID", ((int) courseId));
             startActivity(intent);
@@ -49,7 +47,6 @@ public class CourseDetailsActivity extends AppCompatActivity {
         tvLecturerName = findViewById(R.id.tvLecturerName);
         rvStudentList = findViewById(R.id.rvStudentList);
 
-
         if (courseId == -1) {
             Toast.makeText(this, "Error: Course not found", Toast.LENGTH_SHORT).show();
             finish();
@@ -58,7 +55,7 @@ public class CourseDetailsActivity extends AppCompatActivity {
 
         // Set up RecyclerView
         rvStudentList.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new StudentAdapter(studentList);
+        adapter = new StudentAdapter(studentList, this);
         rvStudentList.setAdapter(adapter);
 
         StudentViewModel studentViewModel = new ViewModelProvider(this).get(StudentViewModel.class);
@@ -67,8 +64,59 @@ public class CourseDetailsActivity extends AppCompatActivity {
             adapter.setStudents(students);
         });
 
-        // Load course details and enrolled students
+        // Load the course details and the  enrolled students
         loadCourseDetails();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadCourseDetails(); // Refresh data when returning to this activity
+    }
+
+    @Override
+    public void onStudentClick(Student student) {
+        // dialog with options to edit or remove student - number 7
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Student Options")
+                .setItems(new String[]{"View Details", "Edit", "Remove from Course"}, (dialog, which) -> {
+                    switch (which) {
+                        case 0: // View Details
+                            Intent detailsIntent = new Intent(CourseDetailsActivity.this, StudentDetailsActivity.class);
+                            detailsIntent.putExtra("STUDENT_ID", student.getStudentId());
+                            startActivity(detailsIntent);
+                            break;
+                        case 1: // Edit
+                            Intent editIntent = new Intent(CourseDetailsActivity.this, EditStudentActivity.class);
+                            editIntent.putExtra("STUDENT_ID", student.getStudentId());
+                            startActivity(editIntent);
+                            break;
+                        case 2: // Removal from Course
+                            removeStudentFromCourse(student);
+                            break;
+                    }
+                })
+                .show();
+    }
+
+    private void removeStudentFromCourse(Student student) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Remove Student")
+                .setMessage("Are you sure you want to remove " + student.getName() + " from this course?")
+                .setPositiveButton("Remove", (dialog, which) -> {
+                    Executors.newSingleThreadExecutor().execute(() -> {
+                        // Delete enrollment
+                        AppDB db = AppDB.getDatabase(this);
+                        db.enrollmentDao().deleteStudentFromCourse(student.getStudentId(), courseId);
+
+                        runOnUiThread(() -> {
+                            Toast.makeText(this, "Student removed from course", Toast.LENGTH_SHORT).show();
+                            loadCourseDetails(); // refresh the list
+                        });
+                    });
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private void loadCourseDetails() {
@@ -77,7 +125,7 @@ public class CourseDetailsActivity extends AppCompatActivity {
             AppDB db = AppDB.getDatabase(this);
             Course course = db.courseDao().getCourseById(courseId);
 
-            // Get enrolled students
+            // getting enrolled students
             List<Enrollment> enrollments = db.enrollmentDao().getStudentsInCourse(courseId);
             List<Student> students = new ArrayList<>();
 
@@ -88,7 +136,6 @@ public class CourseDetailsActivity extends AppCompatActivity {
                 }
             }
 
-            // Update UI on main thread
             runOnUiThread(() -> {
                 if (course != null) {
                     tvCourseCode.setText(course.getCourseCode());

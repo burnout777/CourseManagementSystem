@@ -8,15 +8,14 @@ import androidx.room.Query;
 
 import java.util.List;
 
-import edu.uk.le.coursemanagementsystem.EnrollmentRepo;
 import edu.uk.le.coursemanagementsystem.model.Enrollment;
-import edu.uk.le.coursemanagementsystem.model.Student;
 
 @Dao
 public interface EnrollmentDao {
 
     @Insert
     void insert(Enrollment enrollment);
+
     @Delete
     void deleteEnrollment(Enrollment enrollment);
 
@@ -28,4 +27,7 @@ public interface EnrollmentDao {
 
     @Query("SELECT EXISTS(SELECT 1 FROM enrollment WHERE course_id = :courseId AND student_id = :studentId)")
     boolean isStudentEnrolled(long courseId, long studentId);
+
+    @Query("DELETE FROM enrollment WHERE student_id = :studentId AND course_id = :courseId")
+    void deleteStudentFromCourse(long studentId, long courseId);
 }
